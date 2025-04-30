@@ -1,0 +1,29 @@
+.container {
+  width: 60%;
+  margin: auto;
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.container input {
+  padding: 1em;
+  border-radius: 0.25em;
+  border: 1px solid lightblue;
+  outline: none;
+}
+.container input:focus {
+  background-color: lightblue;
+}
+.container strong {
+  /* color: red; */
+  font-weight: normal;
+  font-size: 0.75em;
+  padding: 1em;
+}
+.container button {
+  padding: 1em;
+  background-color: lightskyblue;
+  border-radius: 1em;
+  align-self: center;
+}
