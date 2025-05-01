@@ -16,7 +16,7 @@
   background-color: lightblue;
 }
 .container strong {
-  /* color: red; */
+  color: red;
   font-weight: normal;
   font-size: 0.75em;
   padding: 1em;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import css from './registerPage.module.css'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 export const RegisterPage = () => {
   const [username, setUsername] = useState('')
@@ -12,6 +13,7 @@ export const RegisterPage = () => {
 
   const [registerState, setRegisterState] = useState('')
 
+  const navigate = useNavigate()
   const validateUsername = value => {
     if (!value) {
       setErrUsername('')
@@ -73,6 +75,7 @@ export const RegisterPage = () => {
       const response = await axios.post('http://localhost:3000/register', { username, password })
       console.log('회원가입 성공', response)
       setRegisterState('등록완료')
+      navigate('/login')
     } catch (err) {
       console.log(err)
     }
