@@ -1,9 +1,8 @@
 import css from './header.module.css'
 import { Link, NavLink } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { setUserInfo } from '../store/useSlice'
-import { useDispatch } from 'react-redux'
 import { getUserProfile, logoutUser } from '../apis/userApi'
 
 export const Header = () => {
@@ -42,7 +41,7 @@ export const Header = () => {
       <nav>
         {username ? (
           <>
-            <MenuLike to="/create" label="글쓰기" />
+            <MenuLink to="/create" label="글쓰기" />
             <button onClick={handleLogout}>로그아웃</button>
             <span>{username}</span>
           </>

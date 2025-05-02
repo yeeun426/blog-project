@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import css from './registerPage.module.css'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setUserInfo } from '../store/useSlice'
+import { loginUser } from '../apis/userApi'
 
 export const LoginPages = () => {
   const dispatch = useDispatch()
@@ -12,7 +12,7 @@ export const LoginPages = () => {
   const [errUsername, setErrUsername] = useState('')
   const [errPassword, setErrPassword] = useState('')
   const [loginStatus, setLoginStatus] = useState('') // 로그인 상태
-  const [redirect, setRedirect] = useState(false) // 로그인 상태 메세지
+  const [redirect, setRedirect] = useState(false) // 로그인 상태 메시지
 
   const navigate = useNavigate()
 
@@ -54,44 +54,42 @@ export const LoginPages = () => {
     validateUsername(username)
     validatePassword(password)
     if (errPassword || errUsername || !username || !password) {
-      setLoginStatus('아이디와 패스워드를 확인하세요')
+      setLoginStatus('아이디와 패스워드를 확인하세요.')
       return
     }
-
     try {
-      const response = await axios.post(`http://localhost:3000/login`, {
-        username,
-        password,
-      })
+      const userData = await loginUser({ username, password })
 
-      if (response.status === 200) {
+      if (userData) {
         setLoginStatus('로그인 성공')
-        dispatch(setUserInfo())
-        setTimeout(() => {
-          setRedirect(true)
-        }, 1000)
+        dispatch(setUserInfo(userData))
+        setRedirect(true)
       }
     } catch (error) {
-      console.log(error)
+      console.error('로그인 오류---', error)
       return
     } finally {
       setLoginStatus(false)
     }
   }
-  if (redirect) navigate('/')
+  useEffect(() => {
+    if (redirect) {
+      navigate('/')
+    }
+  }, [redirect, navigate])
 
   return (
     <main className={css.loginpage}>
       <h2>로그인 페이지</h2>
       {loginStatus && <strong>{loginStatus}</strong>}
       <form className={css.container} onSubmit={login}>
-        <input value={username} type="text" placeholder="id" onChange={handleUsernameChange} />
+        <input value={username} onChange={handleUsernameChange} type="text" placeholder="아이디" />
         <strong>{errUsername}</strong>
         <input
           value={password}
-          type="password"
-          placeholder="password"
           onChange={handlePasswordChange}
+          type="password"
+          placeholder="패스워드"
         />
         <strong>{errPassword}</strong>
         <button type="submit">로그인</button>

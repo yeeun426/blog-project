@@ -5,3 +5,9 @@
   background-color: #eaeaea;
   padding: 1rem;
 }
+.header a,
+.header span,
+.header button {
+  display: inline-block;
+  padding: 0.25rem 1rem;
+}

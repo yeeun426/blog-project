@@ -2,6 +2,7 @@ import { useState } from 'react'
 import QuillEditor from '../components/QuillEditor'
 import css from './createpost.module.css'
 import { useNavigate } from 'react-router-dom'
+import { createPost } from '../apis/postApi'
 
 export const CreatePost = () => {
   const navigate = useNavigate()
@@ -12,51 +13,47 @@ export const CreatePost = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
 
-  const handleContentChange = () => {
+  const handleContentChange = content => {
     setContent(content)
   }
 
-  const createPost = async e => {
+  const handleCreatePost = async e => {
     e.preventDefault()
     setIsSubmitting(true)
     setError('')
+    console.log(files)
+
+    if (!title || !summary || !content) {
+      setIsSubmitting(false)
+      setError('제목, 요약내용, 내용을 모두 입력해주세요.')
+      return
+    }
+
+    const data = new FormData()
+    data.set('title', title)
+    data.set('summary', summary)
+    data.set('content', content)
+    if (files[0]) {
+      data.set('files', files[0])
+    }
+
     try {
-      if (!title || !summary || !content) {
-        setError('모든 필드를 입력해주세요')
-        return
-      }
-
-      const data = new FormData()
-      data.set('title', title)
-      data.set('summary', summary)
-      data.set('content', content)
-
-      if (files[0]) {
-        data.set('files', files[0])
-      }
-
-      try {
-        setIsSubmitting(true)
-        const postData = await createPost(data)
-        console.log('등록성공', postData)
-
-        setIsSubmitting(false)
-        navigate('/')
-      } catch (err) {
-        console.log(err)
-      }
+      await createPost(data)
+      console.log('등록 성공')
+      setIsSubmitting(false)
+      navigate('/')
     } catch (err) {
       console.log(err)
-      setError('', err.message)
     } finally {
       setIsSubmitting(false)
       setError('')
     }
   }
+
   return (
     <main className={css.createpost}>
       <h2>글쓰기</h2>
-      <form className={css.writecon} onSubmit={createPost}>
+      <form className={css.writecon} onSubmit={handleCreatePost}>
         <label htmlFor="title">제목</label>
         <input
           type="text"
@@ -80,8 +77,7 @@ export const CreatePost = () => {
           id="files"
           name="files"
           accept="image/*"
-          value={files}
-          onChange={e => setFiles(e.target.value)}
+          onChange={e => setFiles(e.target.files)}
         />
         <label htmlFor="content">내용</label>
         <div className={css.editorWrapper}>
